@@ -12,6 +12,7 @@
 			<script src="js/plotly-latest.min.js"></script>
 			<script src="js/button.js"></script>
 			<script src="js/login.js"></script>
+			<script src="js/tableau.js"></script>
 			<link rel="stylesheet" href="css/bootstrap.min.css">
     </head>
     
@@ -84,13 +85,39 @@
       
       <div class="col-sm-4" id="data">
       
-        <div class="my-custom-scrollbar my-custom-scrollbar-primary">
-      
-           <div id= "depart_id"> <h3>Donn&#233;es brutes</h3> </div>
+        
+	  
+	      <table class="table table-bordered" id="listObjetIOT">
+		<thead>
+		  <tr>
+		    <th>Objet</th>
+		    
+		  </tr>
+		</thead>
+		<tbody id="listbody">
+
+<!--
+		  <tr>
+		    <td>John</td>
+		    <td>Doe</td>
+		    <td>john@example.com</td>
+		  </tr>
+		  <tr>
+		    <td>Mary</td>
+		    <td>Moe</td>
+		    <td>mary@example.com</td>
+		  </tr>
+		  <tr>
+		    <td>July</td>
+		    <td>Dooley</td>
+		    <td>july@example.com</td>
+		  </tr>
+-->
+
+		</tbody>
+	      </table>
+		    
 	
-	   
-	
-      </div>
 		
 
 		
@@ -259,6 +286,8 @@ function createNav(jsonData){
     iotlast = iotCurrent;
     createNav.first = true;
 }
+
+
 
 //*************** chart data N°1 *****************
        
