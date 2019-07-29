@@ -47,7 +47,7 @@
     <body>
         <nav class="navbar navbar-expand-md bg-dark navbar-dark">
   <!-- Brand -->
-  <a class="navbar-brand" id="navconnect">vous n'etes pas connecté</a>
+  <a class="navbar-brand" id="navconnect">vous n'etes pas connectï¿½</a>
 
   <!-- Toggler/collapsibe Button -->
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -179,7 +179,7 @@
 	
     
            
-            const ws = new WebSocket('ws://192.168.50.1:8080');
+            const ws = new WebSocket('ws://192.168.43.16:8080');
             
             var cpt =0;
             var x_data;
@@ -198,13 +198,12 @@
 		  
 		  console.log("reception message => " +event.data);
 		  var obj = jQuery.parseJSON(event.data);
-		  console.log(jQuery.parseJSON(obj));
-		  jsonData = jQuery.parseJSON(obj);
+		  jsonData = obj;
 		  //creation d'un noeud et init valeur
                   var dataReceive = document.createElement("li"); 
                   dataReceive.innerHTML  = jsonData;
                  
-		  // parser les données reçu
+		  // parser les donnï¿½es reï¿½u
                   //var temp = JSON.parse(event.data);
 		  
 		  // choix des action suivant le protocole defini
@@ -244,7 +243,7 @@
   
 	    $("#valuser").click(function() {
 			//~ alert("vous avez clickez " + $("#username").val());
-			$("#navconnect").text( $("#username").val() + "vous connecté "); 
+			$("#navconnect").text( $("#username").val() + "vous connectï¿½ "); 
 			let messTest = {"req" : "login" , "username" : $("#username").val() , "pwd" : $("#password").val()};
 			console.log(messTest);
 			ws.send(JSON.stringify(messTest));
@@ -289,7 +288,7 @@ function createNav(jsonData){
 
 
 
-//*************** chart data N°1 *****************
+//*************** chart data Nï¿½1 *****************
        
         //~ var ctx = document.getElementById("myChart").getContext('2d');
         //~ var myChart = new Chart(ctx, {
@@ -329,7 +328,7 @@ function createNav(jsonData){
           //~ }
         //~ });
         
-//*************** chart data N°1 ****************    
+//*************** chart data Nï¿½1 ****************    
           window.onload = function () {
           
           var dps = []; // dataPoints
@@ -371,7 +370,7 @@ function createNav(jsonData){
           	},
             {
               axisYType: "secondary",
-              yValueFormatString: "#,##0.00 °C",
+              yValueFormatString: "#,##0.00 ï¿½C",
               name: "Temp",
               label: 'Valeur', 
           		type: "spline",

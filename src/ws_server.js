@@ -31,6 +31,9 @@ var wss = new WebSocket({ port: 8080 });
 var weather;
 var flagSave = false;
 var messageAEnvoyer;
+
+
+
 // API openweathermap
 // recovery of temperature
 function receiveAPI(){
@@ -66,21 +69,31 @@ request.get({
 MongoClient.connect(url, function(err, db) {
   assert.equal(null, err);
   console.log("Connected successfully to server");
-console.log("serveur démarré..."); 
+console.log("serveur dï¿½marrï¿½..."); 
 
+
+// connexion au WebSocket
     wss.on('connection', function (ws) {
       
-       //ws.send(buf);
+       //recpetion de message
       ws.on('message', function (message) {
         
-        console.log(receiveAPI());
+        // console.log("reception" + message);
+        
+        if(message.charAt(0) == "C"){
+         
+          console.log("2: "+message);
+          message = decodMessageIot(message);
+          console.log("3: "+message);
+        }  
+          
         
         // test erreur de reception
         try {
         // parser le message recu par ws                  
         let x_mess = JSON.parse(message);
         
-        console.log("message parsé" + x_mess); 
+        //console.log("message parsï¿½" + x_mess); 
         
         // reception message api  
         //messageAEnvoyer = {"req":"meteo", "data": weather};
@@ -106,7 +119,7 @@ console.log("serveur démarré...");
                       if(flagSave == true){
                         db.collection("raspi").insertOne(x_mess, function(err,res){
                           if (err) throw err;
-                          console.log("un doc inseré");
+                          console.log("un doc inserï¿½");
                         });
                       }else{
                         console.log(x_mess);
@@ -128,23 +141,25 @@ console.log("serveur démarré...");
         }); 
         }catch (e) {
           defautReception++;
-          console.log("defaut reception N°" + defautReception + e);
+          console.log("defaut reception Nï¿½" + defautReception + e);
         }
          
         buf = message;
           
         
-      });
+       });
      
-});
+     });
 
 });
+
 
 function parseCapteur(message){
   message.replace(/req/g,"ok");
   console.log("replace" + message);
   }
 
+// demarrage de l'enregistrement  
 function enregistrement(etat, message,db){
   if(message.req == "capteur"){
     if(etat == true){
@@ -154,6 +169,70 @@ function enregistrement(etat, message,db){
     }
 }
 
+function decodMessageIot(data){
+  var objJson ={"req": "capteur" ,"name": "" , "data" : []};
+
+// let foo = data.length;s
+var fooTemp ="";
+var fooData ="";
+var verifData;
+var autoriz = false;
+
+// recuperation de la cle de verification
+verifData = (data.charAt(data.length-2))+(data.charAt(data.length-1));
+let cpt=0;
+let boolData = false;
+let cptData = 0;
+
+if(verifData == data.length){ // verification de la longueur de data avec la cle
+ data = data.slice(1); // on enlve la premiÃ¨re lettre C pour la marque iot
+    for(let i=0; i<data.length; i++){
+        if(data.charAt(i)== "+"){
+            break;
+        }
+        if(data.charAt(i) == "*"){
+            fooData =fooTemp;
+            switch(cpt){
+                case 0: // nom IOT
+                    objJson.name = fooData;
+                    cpt++;
+                    break;
+                case 1: // nombre de capteur
+                    nbData = parseInt(fooData);
+                    
+                    cpt++;
+                    break;
+                    case 2: // increment nom/valeur capteur
+                        if(cptData < nbData){
+                            if(boolData == true){
+                                
+                                objJson.data[cptData].val =  parseInt(fooData);
+                                cptData++;  // increment du cpt de tableau de capteur
+                            }else{
+                                objJson.data[cptData] = new Object();
+                                objJson.data[cptData].name = fooData;
+                            }
+                            // objJson.data[cptData]
+                            boolData = !boolData;
+                        }
+                        break;   
+                    }    
+                    fooTemp = "";
+                }else{
+                    fooTemp += data.charAt(i);
+                }
+                
+            }
+            
+        }else{
+          return undefined;
+        }
+        
+
+
+console.log("objJson : " + JSON.stringify(objJson));
+return  JSON.stringify(objJson);
+}
 
 app.get('/index.html', function(req, res) {
       console.log("server : " + buf);
@@ -161,8 +240,9 @@ app.get('/index.html', function(req, res) {
 
 
 
-app.listen(3000);
 
+
+app.listen(3000);
 
 
 
