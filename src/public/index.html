@@ -450,7 +450,11 @@ if (idIot.length == 0){
 idIot.forEach(function(iot){
   console.log("iot : " + iot);
    if(iot == capt.name){
-      console.log("c'est le meme");
+     // parcours des element de capt.data et mise a jour
+      capt.data.forEach(function(elem){
+        let updateCapt = capt.name.replace(/:/g, "_") + elem.name; // recherche de id button
+        $($('#'+ updateCapt).children('#val').text(elem.val)); // mise a jour valeur de id button
+      });
       testIot = true;
    }
 });
@@ -470,7 +474,7 @@ function creerDom(){
             
             <button type="button" class="btn btn-secondary border : 1px text-align:center" id="${ capt.name.replace(/:/g, "_")}${data.name}">
           
-            ${data.name}`+ " | " +`${data.val}</button>
+            <span id="name">${data.name}</span>`+ " | " +`<span id="val">${data.val}</span></button>
                             
                             `
         });
