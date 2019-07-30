@@ -3,7 +3,8 @@
     <head>
 			<title>Reception de donnees Arduino</title>
 			<meta charset="utf-8" />
-			<meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="css/bootstrap.min.css" > 
 			<script src="js/canvasjs.min.js"></script>
 			<script src="js/chart.js@2.8.0.js"></script>
 			<script src="js/jquery.min.js"></script>
@@ -12,7 +13,7 @@
 			<script src="js/plotly-latest.min.js"></script>
 			<script src="js/button.js"></script>
 			<script src="js/login.js"></script>
-			<script src="js/tableau.js"></script>
+			<!-- <script src="js/tableau.js"></script> -->
 			<link rel="stylesheet" href="css/bootstrap.min.css">
     </head>
     
@@ -81,84 +82,54 @@
 
 <div class="container">
   
-  <div class="row">
-      
-      <div class="col-sm-4" id="data">
-      
-        
-	  
-	      <table class="table table-bordered" id="listObjetIOT">
-		<thead>
-		  <tr>
-		    <th>Objet</th>
-		    
-		  </tr>
-		</thead>
-		<tbody id="listbody">
-
-<!--
-		  <tr>
-		    <td>John</td>
-		    <td>Doe</td>
-		    <td>john@example.com</td>
-		  </tr>
-		  <tr>
-		    <td>Mary</td>
-		    <td>Moe</td>
-		    <td>mary@example.com</td>
-		  </tr>
-		  <tr>
-		    <td>July</td>
-		    <td>Dooley</td>
-		    <td>july@example.com</td>
-		  </tr>
--->
-
-		</tbody>
-	      </table>
-		    
-	
-		
-
-		
-   
-   </div>
-    <div class="col-sm-4">
-      
-<!--
-      <div class= "row">
-	  <canvas  id="myChart" </canvas>
-      </div>
--->
-      <div class= "row">
-	<h3>Resultat</h3>
-      </div>
-      <div class= "row" >
-  
-	  <div class="btn-group btn-group-toggle" data-toggle="buttons" id="listButton">
-	    
-	    
-	  </div>
-      </div>
-	<br>
-      <div class= "row" >
+  <div class="row" >
     
-	  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-	    <button  type="radio" id="saveButton"> Save </button>
-	    <button  type="radio" id="stopButton"> Stop </button>
-	    <button  type="radio" id="testButton"> Test </button>
-	    
-	  </div>
-      </div>
+        <div class="col-sm">
+           <div id="list" >
+              <table class="table" >
+                  <thead class="thead-dark">
+                      <tr>
+                          <th scope="col" class="btn btn-primary btn-lg"   >capteur</th>
+                          
+                      </tr>
+                  </thead>
+                      <tbody id="tableau" style="height: 70px">
+                         
+                      </tbody>
+                  </table>
+
+           </div>
+        </div>
       
-      <div class= "row">
-	
-	<ul class="list-group">
-	  <li class="list-group-item active" id="tempToulouse">Temperature a Toulouse</li>
-	  <li class="list-group-item active" id="tempBureau">Temperature Bureau</li>
-	  <li class="list-group-item active" id="demo"></li>
-	</ul>
-      </div>
+     
+  
+
+  <div class="col-sm-4"> 
+            <div class= "row">
+              <h3>Resultat</h3>
+            </div>
+            <div class= "row" >
+              <div class="btn-group btn-group-toggle" data-toggle="buttons" id="listButton"></div>
+            </div>
+        <br>
+            <div class= "row" >
+          
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <button  type="radio" id="saveButton"> Save </button>
+            <button  type="radio" id="stopButton"> Stop </button>
+            <button  type="radio" id="testButton"> Test </button>
+            
+          </div>
+            </div>
+            
+            <div class= "row">
+        
+        <ul class="list-group">
+          <li class="list-group-item active" id="tempToulouse">Temperature a Toulouse</li>
+          <li class="list-group-item active" id="tempBureau">Temperature Bureau</li>
+          <li class="list-group-item active" id="demo"></li>
+        </ul>
+            </div>
       
     </div>
     <div class="col-sm-4">
@@ -179,60 +150,66 @@
 	
     
            
-            const ws = new WebSocket('ws://192.168.43.16:8080');
+const ws = new WebSocket('ws://192.168.43.16:8080');
             
-            var cpt =0;
-            var x_data;
-            var x_temp;
-	    var x_weather
-            var dataWeather = document.createElement("li");
-	    var jsonData;
-	      //ouverture webSocket
-	      ws.onopen = function(event) {
-                console.log("WebSocket is open now.");
-                        
-              };
-              
-              //reception de message
-              ws.onmessage = function(event) {
-		  
-		  console.log("reception message => " +event.data);
-		  var obj = jQuery.parseJSON(event.data);
-		  jsonData = obj;
-		  //creation d'un noeud et init valeur
-                  var dataReceive = document.createElement("li"); 
-                  dataReceive.innerHTML  = jsonData;
-                 
-		  // parser les donn�es re�u
-                  //var temp = JSON.parse(event.data);
-		  
-		  // choix des action suivant le protocole defini
-		  switch(jsonData.req){
-		    case "capteur":
-				  console.log("test" );
-				  createNav(jsonData);
-				  //~ jsonData.data.forEach(buildButton);
-				  x_data = parseInt(jsonData.data[0].val);
-				  x_temp = parseFloat(jsonData.data[2].val);
-				  break;
-		    case "meteo":
-				  console.log(parseFloat(jsonData.data.main.temp));
-				  x_weather = parseFloat(jsonData.data.main.temp);
-				  break;
-		    case "login":		    
-				  if(temp.status == "true"){
-				      console.log("retour ok");
-				  }
-				  break;
-		 }
-		   
-                  
-                 document.getElementById("depart_id").appendChild(dataReceive);
-                  dataBureau.innerHTML  = x_temp + " C";
-		  dataWeather.innerHTML = x_weather + " C";
+var cpt =0;
+var x_data;
+var x_temp;
+var x_weather
+var dataWeather = document.createElement("li");
+//document.getElementById("tempToulouse").appendChild(dataWeather);
+var jsonData;
+var idIot = [];
 
-               cpt++;
-              };  
+//ouverture webSocket
+ws.onopen = function(event) {
+        console.log("WebSocket is open now.");
+                
+};
+      
+  //reception de message
+  ws.onmessage = function(event) {
+    // console.log(event.data);
+    // parse  du message reçu
+    jsonData = jQuery.parseJSON(event.data);
+    console.log(jsonData);
+
+    // //creation d'un noeud et init valeur
+              var dataReceive = document.createElement("li"); 
+              dataReceive.innerHTML  = jsonData;
+              
+    
+    // choix des action suivant le protocole defini
+    switch(jsonData.req){
+     
+      case "capteur":
+                    // console.log("test" );
+                    // createNav(jsonData);
+                    //~ jsonData.data.forEach(buildButton);
+                    rechercheIot(jsonData);
+                    x_data = parseFloat(jsonData.data[0].val); // valeur de temperature
+                    x_temp = parseFloat(jsonData.data[1].val); // valeur de luminosité
+                    break;
+      
+      case "meteo":
+                    console.log("meteo : "+parseFloat(jsonData.data.main.temp));
+                    x_weather = parseFloat(jsonData.data.main.temp);
+                    break;
+
+      case "login":		    
+                    if(temp.status == "true"){
+                        console.log("retour ok");
+                    }
+                    break;
+    }
+          
+                      
+    // document.getElementById("depart_id").appendChild(dataReceive);
+    dataBureau.innerHTML  = x_temp + " C";
+    dataWeather.innerHTML = x_weather + " C";
+
+    cpt++;
+  };  
 	      var dataBureau = document.createElement("li");
 		  
 	    document.getElementById("tempBureau").appendChild(dataBureau);
@@ -285,6 +262,7 @@ function createNav(jsonData){
     iotlast = iotCurrent;
     createNav.first = true;
 }
+
 
 
 
@@ -448,6 +426,79 @@ window.onload = function () {
 
       Plotly.newPlot('tester', data, {}, {showSendToCloud: true});
 }
+
+//****************** placement des cartes IOT *********************
+
+
+function rechercheIot(capt){
+
+
+
+// capt = JSON.stringify(capt);
+//console.log("recherche capt : " + capt);
+var cellule =``;
+var ligne = ``;
+var testIot = false; // test de boucle IdIot
+console.log("idIot :" + idIot + "capt.name : "+ capt.name );
+
+if (idIot.length == 0){
+  
+  creerDom();
+}
+
+// parcours du tableau de nom capt
+idIot.forEach(function(iot){
+  console.log("iot : " + iot);
+   if(iot == capt.name){
+      console.log("c'est le meme");
+      testIot = true;
+   }
+});
+    if(!testIot){
+      console.log("je cree le DOM");
+      creerDom();
+      
+    }
+// creation du Dom 
+function creerDom(){
+  let nomId = capt.name.replace(/:/g, "_"); 
+  
+  idIot.push(capt.name);
+    console.log("ce n'est pas le meme");
+    capt.data.forEach(function(data){
+            cellule += `
+            
+            <button type="button" class="btn btn-secondary border : 1px text-align:center" id="${ capt.name.replace(/:/g, "_")}${data.name}">
+          
+            ${data.name}`+ " | " +`${data.val}</button>
+                            
+                            `
+        });
+        ligne +=     `
+            <tr  >
+            <th scope="row" style="line-height:70px; width:50px;border : 1px solid #000000;text-align:center;">${capt.name}</th>
+            <td class="btn-group" role="group" aria-label="Basic example" style="line-height:50px; line-width:80px" >
+                ${cellule} 
+            </td>
+            </tr>
+        `
+        // cellule =``;
+   
+    
+    $(document).ready(function($){
+            
+            $('#tableau').append(ligne);
+            
+    });
+}
+// function pushCelluleIot(){
+        // idIot.push(capt.name);
+        
+        
+// }
+
+}
+
        </script>       
               
         

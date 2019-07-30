@@ -80,11 +80,9 @@ console.log("serveur d�marr�...");
         
         // console.log("reception" + message);
         
-        if(message.charAt(0) == "C"){
-         
-          console.log("2: "+message);
+        // test pour les messages capteur
+        if(message.charAt(0) == "z"){
           message = decodMessageIot(message);
-          console.log("3: "+message);
         }  
           
         
@@ -93,11 +91,7 @@ console.log("serveur d�marr�...");
         // parser le message recu par ws                  
         let x_mess = JSON.parse(message);
         
-        //console.log("message pars�" + x_mess); 
         
-        // reception message api  
-        //messageAEnvoyer = {"req":"meteo", "data": weather};
-        //~ messageAEnvoyer = JSON.stringify(messageAEnvoyer);
         
         switch(x_mess.req){
           case "SAVE":
@@ -121,8 +115,6 @@ console.log("serveur d�marr�...");
                           if (err) throw err;
                           console.log("un doc inser�");
                         });
-                      }else{
-                        console.log(x_mess);
                       }
                       break;
                       
@@ -132,16 +124,16 @@ console.log("serveur d�marr�...");
           // broadcast pour tous les clients
           wss.clients.forEach(function each(client) {
           if (client !== ws && client.readyState === ws.OPEN) {
-            //console.log(message);
+            // console.log("bradcast : " + message);
             client.send(message);
-            console.log("API => " + JSON.parse(receiveAPI()));
-            client.send(JSON.parse(receiveAPI()));
+            // client.send(JSON.parse(receiveAPI()));
             
           }
         }); 
         }catch (e) {
           defautReception++;
-          console.log("defaut reception N�" + defautReception + e);
+
+          console.log("defaut reception N " + defautReception + e + " : " + message);
         }
          
         buf = message;
@@ -169,6 +161,8 @@ function enregistrement(etat, message,db){
     }
 }
 
+
+// decodage du message IOT
 function decodMessageIot(data){
   var objJson ={"req": "capteur" ,"name": "" , "data" : []};
 
@@ -202,23 +196,23 @@ if(verifData == data.length){ // verification de la longueur de data avec la cle
                     
                     cpt++;
                     break;
-                    case 2: // increment nom/valeur capteur
-                        if(cptData < nbData){
-                            if(boolData == true){
-                                
-                                objJson.data[cptData].val =  parseInt(fooData);
-                                cptData++;  // increment du cpt de tableau de capteur
-                            }else{
-                                objJson.data[cptData] = new Object();
-                                objJson.data[cptData].name = fooData;
-                            }
-                            // objJson.data[cptData]
-                            boolData = !boolData;
+                case 2: // increment nom/valeur capteur
+                    if(cptData < nbData){
+                        if(boolData == true){
+                            
+                            objJson.data[cptData].val =  parseInt(fooData);
+                            cptData++;  // increment du cpt de tableau de capteur
+                        }else{
+                            objJson.data[cptData] = new Object();
+                            objJson.data[cptData].name = fooData;
                         }
-                        break;   
-                    }    
+                        // objJson.data[cptData]
+                        boolData = !boolData;
+                    }
+                    break;   
+           }    
                     fooTemp = "";
-                }else{
+          }else{
                     fooTemp += data.charAt(i);
                 }
                 
@@ -230,7 +224,7 @@ if(verifData == data.length){ // verification de la longueur de data avec la cle
         
 
 
-console.log("objJson : " + JSON.stringify(objJson));
+// console.log("objJson : " + JSON.stringify(objJson));
 return  JSON.stringify(objJson);
 }
 
