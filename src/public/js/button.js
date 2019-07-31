@@ -12,25 +12,26 @@
       
       // gestion button start
       $(function(){
-	$("#saveButton").click(function(){
-	  $(this).attr("disabled","disabled");
-	  $("#stopButton").removeAttr("disabled");
-	  console.log(testSave);
-	  //Date beginSave = new Date()
-	  let myJson = JSON.stringify( {"req" : "SAVE" , "date" : new Date()});
-	  ws.send(myJson);
-	});
+          $("#saveButton").click(function(){
+              $(this).attr("disabled","disabled");
+              $("#stopButton").removeAttr("disabled");
+              console.log(testSave);
+              //Date beginSave = new Date()
+              let myJson = JSON.stringify( {"req" : "SAVE" , "date" : new Date()});
+              ws.send(myJson);
+          });
       });
     
       //gestion button stop
       $(function(){
-	$("#stopButton").click(function(){
-	$(this).attr("disabled","disabled");
-	$("#saveButton").removeAttr("disabled");
-	console.log(testStop);
-	let myJson = JSON.stringify( {"req" : "STOP" , "date" : new Date()});
-	  ws.send(myJson);
-	});
+          $("#stopButton").click(function(){
+              $(this).attr("disabled","disabled");
+              $("#saveButton").removeAttr("disabled");
+              console.log(testStop);
+              let myJson = JSON.stringify( {"req" : "STOP" , "date" : new Date()});
+                ws.send(myJson);
+               
+          });
       });
 
     function stopData(){
@@ -39,3 +40,17 @@
       console.log(test);
       ws.send(test);
     }
+
+    $(function(){
+      $('button').click(function(event){
+
+          // $(this).event.attr.
+          // $("#stopButton").removeAttr("disabled");
+          // console.log(testSave);
+          // //Date beginSave = new Date()
+          // let myJson = JSON.stringify( {"req" : "SAVE" , "date" : new Date()});
+          // ws.send(myJson);
+          alert("ouf!");
+      });
+  });
+ 

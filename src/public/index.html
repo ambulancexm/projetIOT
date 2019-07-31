@@ -134,8 +134,8 @@
     </div>
     <div class="col-sm-4">
       <h2>Graph </h2>   
-      <div id="chartContainer" ></div>     
-      
+      <!-- <div id="chartContainer" ></div>      -->
+      <canvas id="myChart"></canvas>
     </div>
   </div>
 </div>
@@ -160,7 +160,9 @@ var dataWeather = document.createElement("li");
 //document.getElementById("tempToulouse").appendChild(dataWeather);
 var jsonData;
 var idIot = [];
-
+var today = new Date();
+var tabData = [{x :"" , y: "" }];
+var tabLabel =[{}];
 //ouverture webSocket
 ws.onopen = function(event) {
         console.log("WebSocket is open now.");
@@ -173,6 +175,7 @@ ws.onopen = function(event) {
     // parse  du message reçu
     jsonData = jQuery.parseJSON(event.data);
     console.log(jsonData);
+    // console.log(tabData);
 
     // //creation d'un noeud et init valeur
               var dataReceive = document.createElement("li"); 
@@ -185,8 +188,15 @@ ws.onopen = function(event) {
       case "capteur":
                     // console.log("test" );
                     // createNav(jsonData);
-                    //~ jsonData.data.forEach(buildButton);
+                    // jsonData.data.forEach(buildButton);
                     rechercheIot(jsonData);
+                    console.log(jsonData.data[1].val);
+                    tabData.push({x : new Date(), y : parseFloat(jsonData.data[0].val)});
+                    // let Today = new Date();
+                    // console.log("new date : " + );
+                    // tabLabel.push({x : })
+                   
+                    addData(new Date().getUTCMinutes() + ":" + new Date().getUTCSeconds(),parseFloat(jsonData.data[0].val));
                     x_data = parseFloat(jsonData.data[0].val); // valeur de temperature
                     x_temp = parseFloat(jsonData.data[1].val); // valeur de luminosité
                     break;
@@ -219,7 +229,7 @@ ws.onopen = function(event) {
 	    document.getElementById("tempToulouse").appendChild(dataWeather);		    
   
 	    $("#valuser").click(function() {
-			//~ alert("vous avez clickez " + $("#username").val());
+			// alert("vous avez clickez " + $("#username").val());
 			$("#navconnect").text( $("#username").val() + "vous connect� "); 
 			let messTest = {"req" : "login" , "username" : $("#username").val() , "pwd" : $("#password").val()};
 			console.log(messTest);
@@ -266,136 +276,77 @@ function createNav(jsonData){
 
 
 
-//*************** chart data N�1 *****************
-       
-        //~ var ctx = document.getElementById("myChart").getContext('2d');
-        //~ var myChart = new Chart(ctx, {
-          //~ type: 'line',
-          //~ data: {
-            //~ labels: ["T1","T2","T3" ],
-            //~ datasets: [{
-              //~ label: 'Valeur',
-              //~ data: [12, 19, 3, 5, 2, 3],
-              //~ backgroundColor: [
-                //~ 'rgba(255, 99, 132, 0.2)',
-                //~ 'rgba(54, 162, 235, 0.2)',
-                //~ 'rgba(255, 206, 86, 0.2)',
-                //~ 'rgba(75, 192, 192, 0.2)',
-                //~ 'rgba(153, 102, 255, 0.2)',
-                //~ 'rgba(255, 159, 64, 0.2)'
-              //~ ],
-              //~ borderColor: [
-                //~ 'rgba(255,99,132,1)',
-                //~ 'rgba(54, 162, 235, 1)',
-                //~ 'rgba(255, 206, 86, 1)',
-                //~ 'rgba(75, 192, 192, 1)',
-                //~ 'rgba(153, 102, 255, 1)',
-                //~ 'rgba(255, 159, 64, 1)'
-              //~ ],
-              //~ borderWidth: 1
-            //~ }]
-          //~ },
-          //~ options: {
-            //~ scales: {
-              //~ yAxes: [{
-                //~ ticks: {
-                  //~ beginAtZero: true
-                //~ }
-              //~ }]
-            //~ }
-          //~ }
-        //~ });
-        
-//*************** chart data N�1 ****************    
-          window.onload = function () {
-          
-          var dps = []; // dataPoints
-          var dps2 =[];
-          var chart = new CanvasJS.Chart("chartContainer", {
-            theme:"light2",
-            animationEnabled: true,
-            toolTip: {
-          		shared: "true"
-          	},
-          	title :{
-          		text: "Dynamic Data"
-          	},
-            axisX: {
-          		title: "Time",
-          		suffix : " s"
-          	},
-          	axisY: {
-          		includeZero: false,
-              title: "indice lumineux",
-          		titleFontColor: "#C0504E",
-          		lineColor: "#C0504E",
-          		tickColor: "#C0504E"
-          	},
-            axisY2: {
-          		title: "Temperature",
-          		titleFontColor: "#C0504E",
-          		suffix : " C",
-          		lineColor: "#C0504E",
-          		tickColor: "#C0504E"
-          	},
-          	data: [{
-              xValueFormatString: "#### sec",
-		          
-              label: 'Valeur', 
-              name: "Lumen",
-          		type: "spline",
-          		dataPoints: dps
-          	},
-            {
-              axisYType: "secondary",
-              yValueFormatString: "#,##0.00 �C",
-              name: "Temp",
-              label: 'Valeur', 
-          		type: "spline",
-          		dataPoints: dps2
-          	}
-            ]
-          });
-          
-                    var xVal = 0;
-          var yVal = 20; 
-          var updateInterval = 2000;
-          var dataLength = 30; // number of dataPoints visible at any point
-          
-          var updateChart = function (count) {
-          
-          	count = count || 1;
-          
-          	for (var j = 0; j < count; j++) {
-          		
-          		dps.push({
-          			x: xVal,
-          			y: x_data
-          		});
-             dps2.push({
-          			x: xVal,
-          			y: x_temp
-          		});
-          		xVal++;
-          	}
-          
-          
-          	if (dps.length > dataLength || dps2.length > dataLength) {
-          		dps.shift();
-              dps2.shift();
-          	}
-          
-          
-          	chart.render();
-          };
-          
-          updateChart(dataLength);
-          
-           
-            setInterval(function(){updateChart()}, updateInterval);
-         
+//*************** charts data  *****************
+
+var config = {
+			type: 'line',
+			data: {
+        labels: [],
+				
+				datasets: [{
+					label: 'capteur de lumière',
+					steppedLine: true,
+                  data: [],
+					fill: false,
+				},]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'courbe de lumiere'
+				},
+				
+				scales: {
+					xAxes: [{
+						// display: true,
+						// scaleLabel: {
+						// 	display: true,
+						// 	labelString: 'Second'
+						// }
+           					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Value'
+						}
+					}]
+				}
+			}
+		};
+
+    // affichage dans le DOM
+    window.onload = function() {
+			var ctx = document.getElementById('myChart').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+		};
+
+    // ajout des données
+    function addData(date,lum){
+      config.data.labels.push(date);
+      console.log(config.data.labels);
+      config.data.datasets.forEach(function(dataset) {
+          dataset.data.push(lum);
+          if(dataset.data.length == 15){
+          dataset.data.shift(); 
+          config.data.labels.shift();
+          console.log(" liste des data" + dataset.data.length);
           }
+          });
+    //  if(config.data.labels.length == 5){
+    //       console.log("longueur : " + config.data.labels.length);
+    //       config.data.labels.shift();
           
+    //  }
+
+				window.myLine.update();
+			
+    }
+
+
+        
+
         
 
 //****************** scroll data *********************
@@ -407,25 +358,6 @@ function createNav(jsonData){
         myCustomScrollbar.onscroll = function() {
           scrollbarY.style.cssText = `top: ${this.scrollTop}px!important; height: 70px; right: ${-this.scrollLeft}px`;
         }
-//****************** plotyJs *********************
-	
-window.onload = function () {
-      var trace1 = {
-	x: [1, 2, 3, 4],
-	y: [10, 15, 13, 17],
-	type: 'scatter',
-      };
-
-      var trace2 = {
-	x: [1, 2, 3, 4],
-	y: [16, 5, 11, 9],
-	type: 'scatter'
-      };
-
-      var data = [trace1, trace2];
-
-      Plotly.newPlot('tester', data, {}, {showSendToCloud: true});
-}
 
 //****************** placement des cartes IOT *********************
 
@@ -466,13 +398,13 @@ idIot.forEach(function(iot){
 // creation du Dom 
 function creerDom(){
   let nomId = capt.name.replace(/:/g, "_"); 
-  
+  let cptIot = 0;
   idIot.push(capt.name);
     console.log("ce n'est pas le meme");
     capt.data.forEach(function(data){
             cellule += `
             
-            <button type="button" class="btn btn-secondary border : 1px text-align:center" id="${ capt.name.replace(/:/g, "_")}${data.name}">
+            <button class="btn btn-secondary border : 1px text-align:center" id="${ capt.name.replace(/:/g, "_")}${data.name}">
           
             <span id="name">${data.name}</span>`+ " | " +`<span id="val">${data.val}</span></button>
                             
@@ -480,7 +412,7 @@ function creerDom(){
         });
         ligne +=     `
             <tr  >
-            <th scope="row" style="line-height:70px; width:50px;border : 1px solid #000000;text-align:center;">${capt.name}</th>
+            <th scope="row" style="line-height:70px; width:50px;border : 1px solid #000000;text-align:center;" >${capt.name}</th>
             <td class="btn-group" role="group" aria-label="Basic example" style="line-height:50px; line-width:80px" >
                 ${cellule} 
             </td>
@@ -495,13 +427,16 @@ function creerDom(){
             
     });
 }
-// function pushCelluleIot(){
-        // idIot.push(capt.name);
-        
-        
-// }
 
 }
+
+// $("#80_7d_3a_85_df_d4lum").click(function() {
+//  console.log(this.id);
+// });
+// $( "#80_7d_3a_85_df_d4lum" ).click(function() {
+//   alert( "Handler for .click() called." );
+// });
+
 
        </script>       
               
