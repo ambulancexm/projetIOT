@@ -71,26 +71,28 @@ MongoClient.connect(url, function(err, db) {
   console.log("Connected successfully to server");
 console.log("serveur d�marr�..."); 
 
-
 // connexion au WebSocket
-    wss.on('connection', function (ws) {
-      
-       //recpetion de message
+    wss.on('connection', function (ws,req) {
+              
+      //recpetion de message
       ws.on('message', function (message) {
+        
+        
         
         // console.log("reception" + message);
         
         // test pour les messages capteur
         if(message.charAt(0) == "z"){
-          message = decodMessageIot(message);
+          message = decodMessageIot(message,req.connection.remoteAddress,db);
         }  
-          
+        
         
         // test erreur de reception
         try {
-        // parser le message recu par ws                  
-        let x_mess = JSON.parse(message);
-        
+          // parser le message recu par ws                  
+          let x_mess = JSON.parse(message);
+          
+          
         
         
         switch(x_mess.req){
@@ -115,6 +117,10 @@ console.log("serveur d�marr�...");
                           if (err) throw err;
                           console.log("un doc inser�");
                         });
+                       
+                      }else{
+                        let ip = req.connection.remoteAddress;
+                          console.log(ip +" =>" + x_mess.name);
                       }
                       break;
                       
@@ -133,7 +139,7 @@ console.log("serveur d�marr�...");
         }catch (e) {
           defautReception++;
 
-          console.log("defaut reception N " + defautReception + e + " : " + message);
+          console.log(req.connection.remoteAddress+" N " + defautReception +" "+ e + " : " + message);
         }
          
         buf = message;
@@ -161,87 +167,102 @@ function enregistrement(etat, message,db){
     }
 }
 
+function testIp(ip,db){
+  if(db.collection("modele").find({"ip" : ip}).count() == 1){
+
+    console.log("çca marche");
+  }
+  console.log("le test est passé");
+}
+
 
 // decodage du message IOT
-function decodMessageIot(data){
-  var objJson ={"req": "capteur" ,"name": "" , "data" : []};
-
-// let foo = data.length;s
-var fooTemp ="";
-var fooData ="";
-var verifData;
-var autoriz = false;
-
-// recuperation de la cle de verification
-verifData = (data.charAt(data.length-2))+(data.charAt(data.length-1));
-let cpt=0;
-let boolData = false;
-let cptData = 0;
-
-if(verifData == data.length){ // verification de la longueur de data avec la cle
- data = data.slice(1); // on enlve la première lettre C pour la marque iot
+function decodMessageIot(data,ip,db){
+  var objJson ={"req": "capteur", "ip": ip, "date" : new Date()  ,"name": "" , "data" : []};
+  
+  // let foo = data.length;s
+  var fooTemp ="";
+  var fooData ="";
+  var verifData;
+  var autoriz = false;
+  
+  // recuperation de la cle de verification
+  verifData = (data.charAt(data.length-2))+(data.charAt(data.length-1));
+  let cpt=0;
+  let boolData = false;
+  let cptData = 0;
+  
+  if(verifData == data.length){ // verification de la longueur de data avec la cle
+    data = data.slice(1); // on enlve la première lettre C pour la marque iot
     for(let i=0; i<data.length; i++){
-        if(data.charAt(i)== "+"){
+      if(data.charAt(i)== "+"){
             break;
-        }
-        if(data.charAt(i) == "*"){
+          }
+          if(data.charAt(i) == "*"){
             fooData =fooTemp;
             switch(cpt){
                 case 0: // nom IOT
-                    objJson.name = fooData;
+                objJson.name = fooData;
                     cpt++;
                     break;
-                case 1: // nombre de capteur
+                    case 1: // nombre de capteur
                     nbData = parseInt(fooData);
                     
                     cpt++;
                     break;
-                case 2: // increment nom/valeur capteur
+                    case 2: // increment nom/valeur capteur
                     if(cptData < nbData){
                         if(boolData == true){
                             
-                            objJson.data[cptData].val =  parseInt(fooData);
+                          objJson.data[cptData].val =  parseInt(fooData);
                             cptData++;  // increment du cpt de tableau de capteur
                         }else{
-                            objJson.data[cptData] = new Object();
+                          objJson.data[cptData] = new Object();
                             objJson.data[cptData].name = fooData;
-                        }
+                          }
                         // objJson.data[cptData]
                         boolData = !boolData;
-                    }
-                    break;   
-           }    
+                      }
+                      break;   
+                    }    
                     fooTemp = "";
-          }else{
+                  }else{
                     fooTemp += data.charAt(i);
                 }
                 
             }
             
-        }else{
-          return undefined;
-        }
-        
-
-
-// console.log("objJson : " + JSON.stringify(objJson));
-return  JSON.stringify(objJson);
-}
-
-app.get('/index.html', function(req, res) {
-      console.log("server : " + buf);
-      });
-
-
-
-
-
-app.listen(3000);
-
-
-
-
-
+          }else{
+            console.log("count => "+testIp(ip,db));
+            return undefined;
+          }
+          
+          
+          
+          
+    
+          //   db.collection("test").insertOne(objJson, function(err,res){
+            //   if (err) throw err;
+            //   console.log("un doc inser�");
+            // });
+            console.log("objJson : " + JSON.stringify(objJson));
+            return  JSON.stringify(objJson);
+          }
+          
+          app.get('/index.html', function(req, res) {
+            console.log("server : " + buf);
+          });
+          
+          
+          
+          
+          
+          app.listen(3000);
+          
+          
+          
+          
+          
 
 
 

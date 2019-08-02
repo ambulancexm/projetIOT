@@ -1,416 +1,423 @@
 <!DOCTYPE html>
 <html>
-    <head>
-			<title>Reception de donnees Arduino</title>
-			<meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="css/bootstrap.min.css" > 
-			<script src="js/canvasjs.min.js"></script>
-			<script src="js/chart.js@2.8.0.js"></script>
-			<script src="js/jquery.min.js"></script>
-			<script src="js/popper.min.js"></script>
-			<script src="js/bootstrap.min.js"></script>
-			<script src="js/plotly-latest.min.js"></script>
-			<script src="js/button.js"></script>
-			<script src="js/login.js"></script>
-			<!-- <script src="js/tableau.js"></script> -->
-			<link rel="stylesheet" href="css/bootstrap.min.css">
-    </head>
-    
-    <style>
-      table, td {
-        border: 1px solid #333;
-      }
 
-      thead {
-        background-color: #333;
-        color: #fff;
-      }
-      
-      /* Note: Try to remove the following lines to see the effect of CSS positioning */
-      .affix {
-        top: 0;
-        width: 100%;
-        z-index: 9999 !important;
-      }
-    
-      .affix + .container-fluid {
-        padding-top: 70px;
-      }
-      .my-custom-scrollbar {
-        position: relative;
-        width: 300px;
-        height: 200px;
-        overflow: auto;
-      }
-    </style>
-  
-    <body>
-        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-  <!-- Brand -->
-  <a class="navbar-brand" id="navconnect">vous n'etes pas connect�</a>
+<head>
+  <title>Reception de donnees Arduino</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <script src="js/canvasjs.min.js"></script>
+  <script src="js/chart.js@2.8.0.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/plotly-latest.min.js"></script>
+  <script src="js/button.js"></script>
+  <script src="js/login.js"></script>
+  <!-- <script src="js/tableau.js"></script> -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
 
-  <!-- Toggler/collapsibe Button -->
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<style>
+  table,
+  td {
+    border: 1px solid #333;
+  }
 
-  <!-- Navbar links -->
-		  <div class="collapse navbar-collapse" id="collapsibleNavbar">
-			<ul class="navbar-nav">
+  thead {
+    background-color: #333;
+    color: #fff;
+  }
 
-			  <li class="form-inline" > 
-			<div class="input-group">
-			  <div class="input-group-prepend">
-				<span class="input-group-text">@</span>
-			  </div>
-			  <input type="text" class="form-control" id="username" placeholder="Username">
-			  <input type="password" class="form-control" id="password" placeholder="password">
-			  <button type="bouton"  id="valuser" class="btn btn-info" >ok</button>
-			</div>
-			  
-		  </li>
-			</ul>
-		  </div>
-</nav> 
-		<div class="jumbotron text-center">
-				<img alt="CEA Tech" src="img/CEA_Tech_logo_rvb.png" />
-				<h1>Communication avec websocket</h1>
-				<p>port 3000</p>
-		  
-		</div>
+  /* Note: Try to remove the following lines to see the effect of CSS positioning */
+  .affix {
+    top: 0;
+    width: 100%;
+    z-index: 9999 !important;
+  }
 
-<div class="container">
-  
-  <div class="row" >
-    
-        <div class="col-sm">
-           <div id="list" >
-              <table class="table" >
-                  <thead class="thead-dark">
-                      <tr>
-                          <th scope="col" class="btn btn-primary btn-lg"   >capteur</th>
-                          
-                      </tr>
-                  </thead>
-                      <tbody id="tableau" style="height: 70px">
-                         
-                      </tbody>
-                  </table>
+  .affix+.container-fluid {
+    padding-top: 70px;
+  }
 
-           </div>
-        </div>
-      
-     
-  
+  .my-custom-scrollbar {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    overflow: auto;
+  }
+</style>
 
-  <div class="col-sm-4"> 
-            <div class= "row">
-              <h3>Resultat</h3>
+<body>
+  <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+    <!-- Brand -->
+    <a class="navbar-brand" id="navconnect">vous n'etes pas connect�</a>
+
+    <!-- Toggler/collapsibe Button -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+      <ul class="navbar-nav">
+
+        <li class="form-inline">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">@</span>
             </div>
-            <div class= "row" >
-              <div class="btn-group btn-group-toggle" data-toggle="buttons" id="listButton"></div>
-            </div>
-        <br>
-            <div class= "row" >
-          
-          <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <button  type="radio" id="saveButton"> Save </button>
-            <button  type="radio" id="stopButton"> Stop </button>
-            <button  type="radio" id="testButton"> Test </button>
-            
+            <input type="text" class="form-control" id="username" placeholder="Username">
+            <input type="password" class="form-control" id="password" placeholder="password">
+            <button type="bouton" id="valuser" class="btn btn-info">ok</button>
           </div>
-            </div>
-            
-            <div class= "row">
-        
-        <ul class="list-group">
-          <li class="list-group-item active" id="tempToulouse">Temperature a Toulouse</li>
-          <li class="list-group-item active" id="tempBureau">Temperature Bureau</li>
-          <li class="list-group-item active" id="demo"></li>
-        </ul>
-            </div>
-      
+
+        </li>
+      </ul>
     </div>
-    <div class="col-sm-4">
-      <h2>Graph </h2>   
-      <!-- <div id="chartContainer" ></div>      -->
-      <canvas id="myChart"></canvas>
+  </nav>
+  <div class="jumbotron text-center">
+    <img alt="CEA Tech" src="img/CEA_Tech_logo_rvb.png" />
+    <h1>Communication avec websocket</h1>
+    <p>port 3000</p>
+
+  </div>
+
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-sm">
+        <div id="list">
+          <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col" class="btn btn-primary btn-lg">capteur</th>
+
+              </tr>
+            </thead>
+            <tbody id="tableau" style="height: 70px">
+
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+
+
+
+
+      <div class="col-sm-4">
+        <div class="row">
+          <h3>Resultat</h3>
+        </div>
+        <div class="row">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons" id="listButton"></div>
+        </div>
+        <br>
+        <div class="row">
+
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <button type="radio" id="saveButton"> Save </button>
+            <button type="radio" id="stopButton"> Stop </button>
+            <button type="radio" id="testButton"> Test </button>
+
+          </div>
+        </div>
+
+        <div class="row">
+
+          <ul class="list-group">
+            <li class="list-group-item active" id="tempToulouse">Temperature a Toulouse</li>
+            <li class="list-group-item active" id="tempBureau">Temperature Bureau</li>
+            <li class="list-group-item active" id="demo"></li>
+          </ul>
+        </div>
+
+      </div>
+      <div class="col-sm-4">
+        <h2>Graph </h2>
+        <!-- <div id="chartContainer" ></div>      -->
+        <canvas id="myChart"></canvas>
+      </div>
     </div>
   </div>
-</div>
-        
-        
-        <script>
-	  
 
-        
-//************* write data ****************
 
-	
-    
-           
-const ws = new WebSocket('ws://192.168.43.16:8080');
-            
-var cpt =0;
-var x_data;
-var x_temp;
-var x_weather
-var dataWeather = document.createElement("li");
-//document.getElementById("tempToulouse").appendChild(dataWeather);
-var jsonData;
-var idIot = [];
-var today = new Date();
-var tabData = [{x :"" , y: "" }];
-var tabLabel =[{}];
-//ouverture webSocket
-ws.onopen = function(event) {
-        console.log("WebSocket is open now.");
-                
-};
-      
-  //reception de message
-  ws.onmessage = function(event) {
-    // console.log(event.data);
-    // parse  du message reçu
-    jsonData = jQuery.parseJSON(event.data);
-    console.log(jsonData);
-    // console.log(tabData);
+  <script>
 
-    // //creation d'un noeud et init valeur
-              var dataReceive = document.createElement("li"); 
-              dataReceive.innerHTML  = jsonData;
-              
-    
-    // choix des action suivant le protocole defini
-    switch(jsonData.req){
-     
-      case "capteur":
-                    // console.log("test" );
-                    // createNav(jsonData);
-                    // jsonData.data.forEach(buildButton);
-                    rechercheIot(jsonData);
-                    console.log(jsonData.data[1].val);
-                    tabData.push({x : new Date(), y : parseFloat(jsonData.data[0].val)});
-                    // let Today = new Date();
-                    // console.log("new date : " + );
-                    // tabLabel.push({x : })
-                   
-                    addData(new Date().getUTCMinutes() + ":" + new Date().getUTCSeconds(),parseFloat(jsonData.data[0].val));
-                    x_data = parseFloat(jsonData.data[0].val); // valeur de temperature
-                    x_temp = parseFloat(jsonData.data[1].val); // valeur de luminosité
-                    break;
-      
-      case "meteo":
-                    console.log("meteo : "+parseFloat(jsonData.data.main.temp));
-                    x_weather = parseFloat(jsonData.data.main.temp);
-                    break;
 
-      case "login":		    
-                    if(temp.status == "true"){
-                        console.log("retour ok");
-                    }
-                    break;
-    }
-          
-                      
-    // document.getElementById("depart_id").appendChild(dataReceive);
-    dataBureau.innerHTML  = x_temp + " C";
-    dataWeather.innerHTML = x_weather + " C";
 
-    cpt++;
-  };  
-	      var dataBureau = document.createElement("li");
-		  
-	    document.getElementById("tempBureau").appendChild(dataBureau);
-	    
-	    
-	    
-	    document.getElementById("tempToulouse").appendChild(dataWeather);		    
-  
-	    $("#valuser").click(function() {
-			// alert("vous avez clickez " + $("#username").val());
-			$("#navconnect").text( $("#username").val() + "vous connect� "); 
-			let messTest = {"req" : "login" , "username" : $("#username").val() , "pwd" : $("#password").val()};
-			console.log(messTest);
-			ws.send(JSON.stringify(messTest));
-	      });
-	      
-// creation du nav de IOT avec capteur	      
-function createNav(jsonData){
-    
-    var iotCurrent = jsonData.id;
-    var iotlast;
-    console.log(iotCurrent == iotlast || typeof createNav.first == 'undefined');
-    if (iotCurrent == iotlast || typeof createNav.first == 'undefined' ){
-      var labelIOT = document.createElement("label")
-      document.getElementById("listButton").appendChild(labelIOT);
-      labelIOT.innerHTML = jsonData.id;
-      labelIOT.setAttribute("class" , "btn btn-outline-primary");
-      labelIOT.setAttribute("disabled","true");
-      
-      
+    //************* write data ****************
 
-      jsonData.data.forEach(buildButton);
-      
-      function buildButton(item, index){
-	//document.getElementById("demo").innerHTML += item.nom + ":" + parseFloat(item.val) ;
-	
-	var buttonCapteur = document.createElement("button");
-	document.getElementById("listButton").appendChild(buttonCapteur);
-	buttonCapteur.innerHTML =  item.nom;
-	buttonCapteur.setAttribute("id", jsonData.id.replace(/:/g,'_') + item.nom);
-	var tho = "thomas";
-	console.log($("#" + jsonData.id.replace(/:/g,'_') + item.nom));
-	
-	
-	$("#" + jsonData.id.replace(/:/g,'_') + item.nom).on('click', function() {
-	  console.log("click" + jsonData.id + item.nom);
-	});
+
+
+
+    const ws = new WebSocket('ws://192.168.43.16:8080');
+
+    var cpt = 0;
+    var x_data;
+    var x_temp;
+    var x_weather
+    var dataWeather = document.createElement("li");
+    //document.getElementById("tempToulouse").appendChild(dataWeather);
+    var jsonData;
+    var idIot = [];
+    var today = new Date();
+    var tabData = [{ x: "", y: "" }];
+    var tabLabel = [{}];
+    //ouverture webSocket
+    ws.onopen = function (event) {
+      console.log("WebSocket is open now.");
+
+    };
+
+    //reception de message
+    ws.onmessage = function (event) {
+      // console.log(event.data);
+      // parse  du message reçu
+      jsonData = jQuery.parseJSON(event.data);
+      console.log(jsonData);
+      // console.log(tabData);
+
+      // //creation d'un noeud et init valeur
+      var dataReceive = document.createElement("li");
+      dataReceive.innerHTML = jsonData;
+
+
+      // choix des action suivant le protocole defini
+      switch (jsonData.req) {
+
+        case "capteur":
+          // console.log("test" );
+          // createNav(jsonData);
+          // jsonData.data.forEach(buildButton);
+          rechercheIot(jsonData);
+          console.log(jsonData.data[1].val);
+          tabData.push({ x: new Date(), y: parseFloat(jsonData.data[0].val) });
+          // let Today = new Date();
+          // console.log("new date : " + );
+          // tabLabel.push({x : })
+
+          addData(new Date().getUTCMinutes() + ":" + new Date().getUTCSeconds(), parseFloat(jsonData.data[0].val));
+          x_data = parseFloat(jsonData.data[0].val); // valeur de temperature
+          x_temp = parseFloat(jsonData.data[1].val); // valeur de luminosité
+          break;
+
+        case "meteo":
+          console.log("meteo : " + parseFloat(jsonData.data.main.temp));
+          x_weather = parseFloat(jsonData.data.main.temp);
+          break;
+
+        case "login":
+          if (temp.status == "true") {
+            console.log("retour ok");
+          }
+          break;
       }
-  }
-    iotlast = iotCurrent;
-    createNav.first = true;
-}
+
+
+      // document.getElementById("depart_id").appendChild(dataReceive);
+      dataBureau.innerHTML = x_temp + " C";
+      dataWeather.innerHTML = x_weather + " C";
+
+      cpt++;
+    };
+    var dataBureau = document.createElement("li");
+
+    document.getElementById("tempBureau").appendChild(dataBureau);
+
+
+
+    document.getElementById("tempToulouse").appendChild(dataWeather);
+
+    $("#valuser").click(function () {
+      // alert("vous avez clickez " + $("#username").val());
+      $("#navconnect").text($("#username").val() + "vous connect� ");
+      let messTest = { "req": "login", "username": $("#username").val(), "pwd": $("#password").val() };
+      console.log(messTest);
+      ws.send(JSON.stringify(messTest));
+    });
+
+    // creation du nav de IOT avec capteur	      
+    function createNav(jsonData) {
+
+      var iotCurrent = jsonData.id;
+      var iotlast;
+      console.log(iotCurrent == iotlast || typeof createNav.first == 'undefined');
+      if (iotCurrent == iotlast || typeof createNav.first == 'undefined') {
+        var labelIOT = document.createElement("label")
+        document.getElementById("listButton").appendChild(labelIOT);
+        labelIOT.innerHTML = jsonData.id;
+        labelIOT.setAttribute("class", "btn btn-outline-primary");
+        labelIOT.setAttribute("disabled", "true");
+
+
+
+        jsonData.data.forEach(buildButton);
+
+        function buildButton(item, index) {
+          //document.getElementById("demo").innerHTML += item.nom + ":" + parseFloat(item.val) ;
+
+          var buttonCapteur = document.createElement("button");
+          document.getElementById("listButton").appendChild(buttonCapteur);
+          buttonCapteur.innerHTML = item.nom;
+          buttonCapteur.setAttribute("id", jsonData.id.replace(/:/g, '_') + item.nom);
+          var tho = "thomas";
+          console.log($("#" + jsonData.id.replace(/:/g, '_') + item.nom));
+
+
+          $("#" + jsonData.id.replace(/:/g, '_') + item.nom).on('click', function () {
+            console.log("click" + jsonData.id + item.nom);
+          });
+        }
+      }
+      iotlast = iotCurrent;
+      createNav.first = true;
+    }
 
 
 
 
-//*************** charts data  *****************
+    //*************** charts data  *****************
 
-var config = {
-			type: 'line',
-			data: {
+    var config = {
+      type: 'line',
+      data: {
         labels: [],
-				
-				datasets: [{
-					label: 'capteur de lumière',
-					steppedLine: true,
-                  data: [],
-					fill: false,
-				},]
-			},
-			options: {
-				responsive: true,
-				title: {
-					display: true,
-					text: 'courbe de lumiere'
-				},
-				
-				scales: {
-					xAxes: [{
-						// display: true,
-						// scaleLabel: {
-						// 	display: true,
-						// 	labelString: 'Second'
-						// }
-           					}],
-					yAxes: [{
-						display: true,
-						scaleLabel: {
-							display: true,
-							labelString: 'Value'
-						}
-					}]
-				}
-			}
-		};
+
+        datasets: [{
+          label: 'capteur de lumière',
+          steppedLine: true,
+          data: [],
+          fill: false,
+        },]
+      },
+      options: {
+        responsive: true,
+        title: {
+          display: true,
+          text: 'courbe de lumiere'
+        },
+
+        scales: {
+          xAxes: [{
+            // display: true,
+            // scaleLabel: {
+            // 	display: true,
+            // 	labelString: 'Second'
+            // }
+          }],
+          yAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Value'
+            }
+          }]
+        }
+      }
+    };
 
     // affichage dans le DOM
-    window.onload = function() {
-			var ctx = document.getElementById('myChart').getContext('2d');
-			window.myLine = new Chart(ctx, config);
-		};
+    window.onload = function () {
+      var ctx = document.getElementById('myChart').getContext('2d');
+      window.myLine = new Chart(ctx, config);
+    };
 
     // ajout des données
-    function addData(date,lum){
+    function addData(date, lum) {
       config.data.labels.push(date);
       console.log(config.data.labels);
-      config.data.datasets.forEach(function(dataset) {
-          dataset.data.push(lum);
-          if(dataset.data.length == 15){
-          dataset.data.shift(); 
+      config.data.datasets.forEach(function (dataset) {
+        dataset.data.push(lum);
+        if (dataset.data.length == 15) {
+          dataset.data.shift();
           config.data.labels.shift();
           console.log(" liste des data" + dataset.data.length);
-          }
-          });
-    //  if(config.data.labels.length == 5){
-    //       console.log("longueur : " + config.data.labels.length);
-    //       config.data.labels.shift();
-          
-    //  }
-
-				window.myLine.update();
-			
-    }
-
-
-        
-
-        
-
-//****************** scroll data *********************
-        var myCustomScrollbar = document.querySelector('.my-custom-scrollbar');
-        var ps = new PerfectScrollbar(myCustomScrollbar);
-        
-        var scrollbarY = myCustomScrollbar.querySelector('.ps.ps--active-y>.ps__scrollbar-y-rail');
-        
-        myCustomScrollbar.onscroll = function() {
-          scrollbarY.style.cssText = `top: ${this.scrollTop}px!important; height: 70px; right: ${-this.scrollLeft}px`;
         }
-
-//****************** placement des cartes IOT *********************
-
-
-function rechercheIot(capt){
-
-
-
-// capt = JSON.stringify(capt);
-//console.log("recherche capt : " + capt);
-var cellule =``;
-var ligne = ``;
-var testIot = false; // test de boucle IdIot
-console.log("idIot :" + idIot + "capt.name : "+ capt.name );
-
-if (idIot.length == 0){
-  
-  creerDom();
-}
-
-// parcours du tableau de nom capt
-idIot.forEach(function(iot){
-  console.log("iot : " + iot);
-   if(iot == capt.name){
-     // parcours des element de capt.data et mise a jour
-      capt.data.forEach(function(elem){
-        let updateCapt = capt.name.replace(/:/g, "_") + elem.name; // recherche de id button
-        $($('#'+ updateCapt).children('#val').text(elem.val)); // mise a jour valeur de id button
       });
-      testIot = true;
-   }
-});
-    if(!testIot){
-      console.log("je cree le DOM");
-      creerDom();
-      
+      //  if(config.data.labels.length == 5){
+      //       console.log("longueur : " + config.data.labels.length);
+      //       config.data.labels.shift();
+
+      //  }
+
+      window.myLine.update();
+
     }
-// creation du Dom 
-function creerDom(){
-  let nomId = capt.name.replace(/:/g, "_"); 
-  let cptIot = 0;
-  idIot.push(capt.name);
-    console.log("ce n'est pas le meme");
-    capt.data.forEach(function(data){
-            cellule += `
+
+
+
+
+
+
+    //****************** scroll data *********************
+    var myCustomScrollbar = document.querySelector('.my-custom-scrollbar');
+    var ps = new PerfectScrollbar(myCustomScrollbar);
+
+    var scrollbarY = myCustomScrollbar.querySelector('.ps.ps--active-y>.ps__scrollbar-y-rail');
+
+    myCustomScrollbar.onscroll = function () {
+      scrollbarY.style.cssText = `top: ${this.scrollTop}px!important; height: 70px; right: ${-this.scrollLeft}px`;
+    }
+
+    //****************** placement des cartes IOT *********************
+
+
+    function rechercheIot(capt) {
+
+
+
+      // capt = JSON.stringify(capt);
+      //console.log("recherche capt : " + capt);
+      var cellule = ``;
+      var ligne = ``;
+      var testIot = false; // test de boucle IdIot
+      console.log("idIot :" + idIot + "capt.name : " + capt.name);
+
+      if (idIot.length == 0) {
+
+        creerDom();
+      }
+      
+      // parcours du tableau de nom capt
+      
+      idIot.forEach(function (iot) {
+        console.log("iot : " + iot);
+        if (iot == capt.name) {
+          // parcours des element de capt.data et mise a jour
+            capt.data.forEach(function (elem) {
+            let updateCapt = capt.name.replace(/:/g, "_") + elem.name; // recherche de id button
+            $($('#' + updateCapt).children('#val').text(elem.val)); // mise a jour valeur de id button
+          });
+          testIot = true;
+        }
+      });
+    
+      if (!testIot) {
+        console.log("je cree le DOM");
+        creerDom();
+
+      }
+      // creation du Dom 
+      function creerDom() {
+        let nomId = capt.name.replace(/:/g, "_");
+        let cptIot = 0;
+        idIot.push(capt.name);
+        console.log("ce n'est pas le meme");
+        // ${ capt.name.replace(/:/g, "_")}
+        capt.data.forEach(function (data) {
+          cellule += `
             
-            <button class="btn btn-secondary border : 1px text-align:center" id="${ capt.name.replace(/:/g, "_")}${data.name}">
-          
-            <span id="name">${data.name}</span>`+ " | " +`<span id="val">${data.val}</span></button>
+            <button class="btn btn-secondary btn-capteur" id="${data.name}">
+              <span id="name">${data.name}</span>` + " | " + `<span id="val">${data.val}</span>
+            </button>
                             
                             `
+           
         });
-        ligne +=     `
+        ligne += `
             <tr  >
             <th scope="row" style="line-height:70px; width:50px;border : 1px solid #000000;text-align:center;" >${capt.name}</th>
             <td class="btn-group" role="group" aria-label="Basic example" style="line-height:50px; line-width:80px" >
@@ -419,27 +426,27 @@ function creerDom(){
             </tr>
         `
         // cellule =``;
-   
-    
-    $(document).ready(function($){
-            
-            $('#tableau').append(ligne);
-            
-    });
-}
-
-}
-
-// $("#80_7d_3a_85_df_d4lum").click(function() {
-//  console.log(this.id);
-// });
-// $( "#80_7d_3a_85_df_d4lum" ).click(function() {
-//   alert( "Handler for .click() called." );
-// });
 
 
-       </script>       
-              
         
-    </body>
+        
+        $('#tableau').append(ligne);
+        $('.btn-capteur').click(function (event) {
+
+          
+          alert("ouf!");
+        })
+        
+      }
+      $(document).ready(function(){});
+    }
+
+
+
+
+  </script>
+
+
+</body>
+
 </html>
