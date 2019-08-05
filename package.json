@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "concurrently \"npm:server\" \"npm:client\"",
+    "server": "nodemon index.js",
+    "client": "parcel watch src/client/index.html -d public"
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +20,8 @@
     "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "concurrently": "^4.1.1",
+    "nodemon": "^1.19.1",
+    "parcel-bundler": "^1.12.3"
   }
 }
