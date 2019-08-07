@@ -1,7 +1,7 @@
 // client.js
 const _ = require('lodash');
 const WebSocket = require('ws');
-const url = 'ws://192.168.137.1:8080';
+const url = 'ws://192.168.137.1:8081';
 const ws = new WebSocket(url);
 
 const MACs = [
@@ -11,7 +11,7 @@ const MACs = [
 ];
 
 const getRandomData = MAC => {
-  let tmp = "z" + MAC + "*3*lum*" + _.random(300, 600) + "*temp*" + _.random(20, 30) + "*mouv*" + _.random(0, 1) + "*";
+  let tmp = MAC + "*3*lum*" + _.random(300, 600) + "*temp*" + _.random(20, 30) + "*mouv*" + _.random(0, 1) + "*";
   tmp += "+" + (tmp.length + 3) % 100;
   return tmp;
 };
