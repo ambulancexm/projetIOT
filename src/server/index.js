@@ -1,4 +1,6 @@
 require('./fakeIOT');
+const { parseIOTDeviceDataStr, addData, getFormattedData } = require('./parser');
+
 const WebSocket = require('ws').Server
 let request = require('request');
 const MongoClient = require('mongodb').MongoClient, assert = require('assert');
@@ -86,7 +88,9 @@ wss.on('connection', function (ws, req) {
     if (message.charAt(0) == "z") {
       // decode le message recu par arduino
       //message = decodMessageIot(message,req.connection.remoteAddress,db);
-      message = decodMessageIot(message, req.connection.remoteAddress);
+      addData(parseIOTDeviceDataStr(message, req.connection.remoteAddress));
+      console.log(getFormattedData().IOTDevice);
+      //message = decodMessageIot(message, req.connection.remoteAddress);
     }
 
 
