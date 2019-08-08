@@ -1,6 +1,5 @@
 require('./fakeIOT');
 const { parseIOTDeviceDataStr, addData, getFormattedData } = require('./parser');
-
 const WebSocket = require('ws').Server
 let request = require('request');
 const MongoClient = require('mongodb').MongoClient, assert = require('assert');
@@ -27,7 +26,7 @@ wssIOT.on('connection', (ws, req) => {
 
     console.log("oit8081 : ", message);
     addData(parseIOTDeviceDataStr(message, req.connection.remoteAddress));
-    console.log(getFormattedData().IOTDevice);
+    //console.log(getFormattedData().IOTDevice);
     
     // broadcast pour tous les clients web
     wss.clients.forEach(client => {

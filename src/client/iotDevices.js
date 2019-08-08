@@ -1,4 +1,7 @@
-var jQuery = require('jquery');
+import _ from 'lodash';
+import $ from 'jquery';
+import { on } from './pubsub';
+/* var jQuery = require('jquery');
 var $ = jQuery;
 
 var idIot = []; // stocke tout les IOT
@@ -40,12 +43,12 @@ var idIot = []; // stocke tout les IOT
 //   createNav.first = true;
 // }
 
-export const rechercheIot = function rechercheIot(capt) {
+const rechercheIot = function rechercheIot(capt) {
 
 
 
   // capt = JSON.stringify(capt);
-  console.log("recherche capt : " , capt);
+  console.log("recherche capt : ", capt);
   var cellule = ``;
   var ligne = ``;
   var testIot = false; // test de boucle IdIot
@@ -55,17 +58,17 @@ export const rechercheIot = function rechercheIot(capt) {
 
     creerDom();
   }
-  
+
   // parcours du tableau de nom capt
-  
+
   idIot.forEach(function (iot) {
     console.log("iot : " + iot);
     if (iot == capt.name) {
       // parcours des element de capt.data et mise a jour
-        capt.data.forEach(function (elem) {
+      capt.data.forEach(function (elem) {
         let updateCapt = capt.name.replace(/:/g, "_") + elem.name; // recherche de id button
-       $($('#' + updateCapt).children('#val').text(elem.val)); // mise a jour valeur de id button
-       
+        $($('#' + updateCapt).children('#val').text(elem.val)); // mise a jour valeur de id button
+
       });
       testIot = true;
     }
@@ -91,7 +94,7 @@ export const rechercheIot = function rechercheIot(capt) {
         </button>
                         
                         `
-       
+
     });
     ligne += `
         <tr  >
@@ -104,10 +107,71 @@ export const rechercheIot = function rechercheIot(capt) {
     $('#tableau').append(ligne);
 
     $('.btn-capteur').click(function (event) {
-      console.log("clickez sur "+ this.id);
-       
+      console.log("clickez sur " + this.id);
+
     })
-    
+
   }
-  $(document).ready(function(){});
-}
+  $(document).ready(function () { });
+} */
+
+
+// state
+const state = {
+  selectedSensors: []
+};
+
+const addSelectedSensor = sensor => 
+  _.findIndex(state.selectedSensors, s => s.name === sensor.name && s.device === sensor.device) === -1
+  && state.selectedSensors.push(sensor);
+
+// cache DOM
+const $iotDevices = $('#iot-devices');
+
+
+// HTML String Templates
+const sensorTemplate = (name, val, device) => `
+    <button class="btn-sensor btn btn-primary btn-lg btn-block active"
+            id="${device}-${name}">
+            <span>${name}</span> | <span>${val}</span>
+    </button>`;
+
+const deviceTemplate = (device, sensorTemplateArr) => `
+    <div class="btn-group" id="${device}">
+      <button class="btn btn-default disabled">${device}</button>
+      ${sensorTemplateArr.join('')}
+    </div>`;
+
+const devicesTemplate = deviceTemplateArr => `
+      <div class="btn-group-vertical" id="arrayDevices">
+          ${deviceTemplateArr.join('')}
+      </div>`;
+
+const IOTDevicesTemplate = IOTDevicesData => {
+  const devicesTemplateArr = _.map(IOTDevicesData, (IOTDeviceData, device) => {
+    const sensorTemplateArr = _.map(_.last(IOTDeviceData.data).sensors, sensor => sensorTemplate(
+      sensor.name,
+      sensor.val,
+      device
+    ));
+    return deviceTemplate(device, sensorTemplateArr);
+  });
+  return devicesTemplate(devicesTemplateArr);
+};
+
+// render
+const render = IOTDevicesData => $iotDevices.html(IOTDevicesTemplate(IOTDevicesData));
+
+// attach events
+// sensor button click
+$iotDevices.delegate('.btn-sensor ', 'click', e => {
+  const [device, name] = e.currentTarget.id.split('-');
+  addSelectedSensor({ device, name });
+  console.log(state);
+});
+// server data update 
+on('server/data/update', data => render(data.IOTDevice));
+
+
+
+

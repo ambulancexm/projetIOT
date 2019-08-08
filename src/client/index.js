@@ -1,20 +1,22 @@
 import 'bootstrap/dist/css/bootstrap.css';
-
+import './iotDevices';
 import * as constante from './constante';
+import { emit } from './pubsub';
 
 //************* write data ****************
 
 const ws = new WebSocket("ws://localhost:"+ constante.port);
 
 //ouverture webSocket
-ws.onopen = function (event) {
+ws.onopen = event => {
   console.log("WebSocket is open now.");
 };
 
 //reception de message
-ws.onmessage = function (event) {
+ws.onmessage = event => {
   // parse  du message reçu
-  console.log(JSON.parse(event.data))
+  const data = JSON.parse(event.data);
+  emit('server/data/update', data);
 };
 
 

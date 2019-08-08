@@ -24,7 +24,7 @@ output format
 
 // decodage du message IOT
  const parseIOTDeviceDataStr = (data, ip) => {
-    var objJson = { "req": "IOTDevice", "IP": ip, "date": new Date(), "MAC": "", "data": [] };
+    var objJson = { "req": "IOTDevice", "IP": ip, "date": new Date(), "MAC": "", "sensors": [] };
 
     // let foo = data.length;s
     var fooTemp = "";
@@ -60,11 +60,11 @@ output format
                         if (cptData < nbData) {
                             if (boolData == true) {
 
-                                objJson.data[cptData].val = parseInt(fooData);
+                                objJson.sensors[cptData].val = parseInt(fooData);
                                 cptData++;  // increment du cpt de tableau de capteur
                             } else {
-                                objJson.data[cptData] = new Object();
-                                objJson.data[cptData].name = fooData;
+                                objJson.sensors[cptData] = new Object();
+                                objJson.sensors[cptData].name = fooData;
                             }
                             // objJson.data[cptData]
                             boolData = !boolData;
