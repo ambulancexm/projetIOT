@@ -10,14 +10,14 @@ var config = {
         labels: [],
 
         datasets: [
-        //     {
-        //     label: 'capteur de lumière',
-        //     // fillColor : "rgb(138, 43, 226, 0.1)",
-        //     borderColor: "rgb(138, 43, 100, 1)",
-        //     steppedLine: true,
-        //     data: [],
-        //     fill: false,
-        // }
+            {
+            label: 'capteur de lumière',
+            // fillColor : "rgb(138, 43, 226, 0.1)",
+            borderColor: "rgb(138, 43, 100, 1)",
+            steppedLine: true,
+            data: [],
+            fill: false,
+        }
     ]
     },
     options: {
@@ -47,11 +47,11 @@ var config = {
 };
 
 
-// affichage dans le DOM
-window.onload = function () {
-    var ctx = document.getElementById('iot-devices-sensors-chart').getContext('2d');
-    window.myLine = new Chart(ctx, config);
-};
+// // affichage dans le DOM
+// window.onload = function () {
+//     var ctx = document.getElementById('iot-devices-sensors-chart').getContext('2d');
+//     window.myLine = new Chart(ctx, config);
+// };
 
 
 

@@ -131,20 +131,20 @@ const $iotDevices = $('#iot-devices');
 
 // HTML String Templates
 const sensorTemplate = (name, val, device) => `
-    <button class="btn-sensor btn btn-primary btn-lg btn-block active"
+    <button class="btn-sensor btn btn-primary btn-lg active"
             id="${device}-${name}">
             <span>${name}</span> | <span>${val}</span>
     </button>`;
 
 const deviceTemplate = (device, sensorTemplateArr) => `
-    <div class="btn-group" id="${device}">
-      <button class="btn btn-default disabled">${device}</button>
-      ${sensorTemplateArr.join('')}
+    <div class="btn-group mr-1" role="group" id="${device}">
+      <button class="btn btn-success disabled">${device}</button>
+      <div>${sensorTemplateArr.join('')}</div>
     </div>`;
 
 const devicesTemplate = deviceTemplateArr => `
-      <div class="btn-group-vertical" id="arrayDevices">
-          ${deviceTemplateArr.join('')}
+      <div class="btn-toolbar " role="toolbar" id="arrayDevices">
+          ${deviceTemplateArr.join('')} 
       </div>`;
 
 const IOTDevicesTemplate = IOTDevicesData => {

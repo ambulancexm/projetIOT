@@ -30337,15 +30337,15 @@ var addSelectedSensor = function addSelectedSensor(sensor) {
 var $iotDevices = (0, _jquery.default)('#iot-devices'); // HTML String Templates
 
 var sensorTemplate = function sensorTemplate(name, val, device) {
-  return "\n    <button class=\"btn-sensor btn btn-primary btn-lg btn-block active\"\n            id=\"".concat(device, "-").concat(name, "\">\n            <span>").concat(name, "</span> | <span>").concat(val, "</span>\n    </button>");
+  return "\n    <button class=\"btn-sensor btn btn-primary btn-lg active\"\n            id=\"".concat(device, "-").concat(name, "\">\n            <span>").concat(name, "</span> | <span>").concat(val, "</span>\n    </button>");
 };
 
 var deviceTemplate = function deviceTemplate(device, sensorTemplateArr) {
-  return "\n    <div class=\"btn-group\" id=\"".concat(device, "\">\n      <button class=\"btn btn-default disabled\">").concat(device, "</button>\n      ").concat(sensorTemplateArr.join(''), "\n    </div>");
+  return "\n    <div class=\"btn-group mr-1\" role=\"group\" id=\"".concat(device, "\">\n      <button class=\"btn btn-success disabled\">").concat(device, "</button>\n      <div>").concat(sensorTemplateArr.join(''), "</div>\n    </div>");
 };
 
 var devicesTemplate = function devicesTemplate(deviceTemplateArr) {
-  return "\n      <div class=\"btn-group-vertical\" id=\"arrayDevices\">\n          ".concat(deviceTemplateArr.join(''), "\n      </div>");
+  return "\n      <div class=\"btn-toolbar \" role=\"toolbar\" id=\"arrayDevices\">\n          ".concat(deviceTemplateArr.join(''), " \n      </div>");
 };
 
 var IOTDevicesTemplate = function IOTDevicesTemplate(IOTDevicesData) {
