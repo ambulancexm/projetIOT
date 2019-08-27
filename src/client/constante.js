@@ -1,3 +1,2 @@
-export const host = "192.168.137.1";
-export const port = "8080";
-
+export const HOST = "localhost";
+export const PORT_CLIENT = "8080";
